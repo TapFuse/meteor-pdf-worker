@@ -26,7 +26,7 @@ http@1.1.1
 id-map@1.0.4
 jquery@1.11.4
 livedata@1.0.15
-local-test:tapfuse:pdf-worker@1.0.0
+local-test:tapfuse:pdf-worker@1.0.1
 logging@1.0.8
 meteor@1.1.10
 meteor-base@1.0.1
@@ -46,7 +46,7 @@ retry@1.0.4
 routepolicy@1.0.6
 spacebars@1.0.7
 spacebars-compiler@1.0.7
-tapfuse:pdf-worker@1.0.0
+tapfuse:pdf-worker@1.0.1
 tinytest@1.0.6
 tracker@1.0.9
 ui@1.0.8
