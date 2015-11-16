@@ -13,6 +13,12 @@ var CS = [C, S];
 Package.onUse(function(api) {
   api.versionsFrom('1.1.0.3');
 
+  // Core
+  api.use([
+    'meteor-base'
+  ]);
+
+
   api.use('classcraft:meteor-wkhtmltopdf@0.3.1');
   api.use('peerlibrary:aws-sdk@2.1.47_1');
 
