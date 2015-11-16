@@ -2,8 +2,8 @@ var Future = Npm.require('fibers/future');
 var fs = Npm.require('fs');
 var writer = fs.createWriteStream('out.pdf');
 
-createFile = function(html, callback) {
-	wkhtmltopdf(html, function(err, signal) {
+createFile = function(html, options, callback) {
+	wkhtmltopdf(html, options, function(err, signal) {
 		if (err) {
 			throw new Error(err.message);
 		} else {
@@ -25,7 +25,7 @@ uploadFile = function (file, s3, callback) {
 	});
 }
 
-generatePDF = function(link, bucket, fileName, key) {
+generatePDF = function(link, options, bucket, fileName, key) {
 	var key = key ? key : '';
 	var s3 = new AWS.S3({
 		params: {
@@ -38,14 +38,23 @@ generatePDF = function(link, bucket, fileName, key) {
 	var wrappedCreateFile = Meteor.wrapAsync(createFile);
 	var wrappedUploadFile = Meteor.wrapAsync(uploadFile);
 
-	var file = wrappedCreateFile(link);
+	var file = wrappedCreateFile(link, options);
 	if (file) {
 		return wrappedUploadFile(file, s3);
 	}
 }
 
 Meteor.methods({
-	'pdf-worker/createPDF': function(link, bucket, fileName, key) {
-		return generatePDF(link, bucket, fileName, key);
+	/**
+	*	link - link used to generated pdf from
+	*	options - options for generating pdf
+	*	bucket - AWS bucket name
+	*	fileName - how the file should be named in AWS
+	* key - folder in the bucket
+	* Example:
+	* 	key + filename + '.pdf' = test/out.pdf
+	*/
+	'pdf-worker/createPDF': function(link, options, bucket, fileName, key) {
+		return generatePDF(link, options, bucket, fileName, key);
 	}
 });
