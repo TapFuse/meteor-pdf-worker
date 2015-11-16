@@ -1,11 +1,11 @@
 var Future = Npm.require('fibers/future');
 var fs = Npm.require('fs');
-var writer = fs.createWriteStream('out.pdf');
 
-createFile = function(html, options, callback) {
+
+createFile = function(writer, html, options, callback) {
 	wkhtmltopdf(html, options, function(err, signal) {
 		if (err) {
-			throw new Error(err.message);
+			console.log('createFile - ', err);
 		} else {
 			callback && callback( null, fs.readFileSync('out.pdf'));
 		}
@@ -18,14 +18,15 @@ uploadFile = function (file, s3, callback) {
 	},
 	function(err, result) {
 		if (err) {
-			throw new Error(err.message);
-		} else {
+      console.log('uploadFile - ', err);
+			// throw new Error(err.message);
+		} else if (result) {
 			callback && callback( null, result);
 		}
 	});
 }
 
-generatePDF = function(link, options, bucket, fileName, key) {
+generatePDF = function(writer, link, options, bucket, fileName, key) {
 	var key = key ? key : '';
 	var s3 = new AWS.S3({
 		params: {
@@ -38,10 +39,11 @@ generatePDF = function(link, options, bucket, fileName, key) {
 	var wrappedCreateFile = Meteor.wrapAsync(createFile);
 	var wrappedUploadFile = Meteor.wrapAsync(uploadFile);
 
-	var file = wrappedCreateFile(link, options);
+	var file = wrappedCreateFile(writer, link, options);
 	if (file) {
 		return wrappedUploadFile(file, s3);
 	}
+  throw new Error('failed to generate');
 }
 
 Meteor.methods({
@@ -55,6 +57,7 @@ Meteor.methods({
 	* 	key + filename + '.pdf' = test/out.pdf
 	*/
 	'pdf-worker/createPDF': function(link, options, bucket, fileName, key) {
-		return generatePDF(link, options, bucket, fileName, key);
+    var writer = fs.createWriteStream( 'out.pdf');
+		return generatePDF(writer, link, options, bucket, fileName, key);
 	}
 });

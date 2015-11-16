@@ -1,6 +1,6 @@
 Package.describe({
   name: 'tapfuse:pdf-worker',
-  version: '1.0.0',
+  version: '1.0.1',
   summary: 'DO_NOT_USE wkhtmltopdf worker for pdf generation and upload to AWS',
   git: 'https://github.com/TapFuse/pdf-worker.git',
   documentation: 'README.md'
