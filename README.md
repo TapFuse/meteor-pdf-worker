@@ -1,4 +1,4 @@
-TESTING DO NOT USE
+### Package is no longer maintaned.
 
 Tapfuse PDF generation worker
 =============================
